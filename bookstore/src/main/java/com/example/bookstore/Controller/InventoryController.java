@@ -5,6 +5,10 @@ import java.util.Optional;
 
 import org.hibernate.type.descriptor.java.IntegerJavaType;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -51,6 +55,7 @@ public class InventoryController {
     }
 
     @GetMapping("/getQuantity")
+    @Cacheable(value = "bookQuantities", key = "#isbn")
     public ResponseEntity<String> getBookQuantityById(@RequestParam Long isbn){
         String idString = String.valueOf(isbn);
         // The Format of ISBN should be 13 digits long
@@ -72,11 +77,12 @@ public class InventoryController {
     }
 
     @PutMapping("/updateQuantity")
+    @CacheEvict(value = "bookQuantities", key = "#isbn")
     public ResponseEntity<String> updateBookQuantityById(@RequestParam Long isbn, @RequestParam Integer quantity){
         if(!bookService.isValidISBN(isbn)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested ISBN is not in correct format. It should be 13 digits long.");
         }
-        if(bookService.doesBookExists(isbn)){
+        if(!bookService.doesBookExists(isbn)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ISBN " + isbn + " is not found in our database!");
         }
         bookService.updateBookQuantityById(isbn, quantity);
@@ -84,8 +90,12 @@ public class InventoryController {
     }
 
     @GetMapping("/listAll")
-    public List<Book> listAllBooks(){
-        return bookService.listAllBooks();
+    public ResponseEntity<List<Book>> listAllBooks(@RequestParam(defaultValue = "0") int page,
+                                   @RequestParam(defaultValue = "10") int size){
+        
+        List<Book> bookpage = bookService.listAllBooks(page, size);
+
+        return ResponseEntity.ok(bookpage);
     }
 
     // @GetMapping("/search")

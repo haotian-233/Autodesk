@@ -3,6 +3,9 @@ package com.example.bookstore.Service;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.example.bookstore.Entity.Book;
@@ -40,9 +43,11 @@ public class BookService {
         bookInventory.saveAndFlush(book);
     }
 
-    public List<Book> listAllBooks(){
-        // TODO: IO intensive, to be optimized 
-        return bookInventory.findAll();
+    public List<Book> listAllBooks(Integer page, Integer size) {
+        Pageable pageable = PageRequest.of(page,size);
+        Page<Book> bookPage = bookInventory.findAll(pageable);
+        List<Book> books = bookPage.getContent();
+        return books;
     }
 
 
