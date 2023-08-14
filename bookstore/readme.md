@@ -1,20 +1,42 @@
 # JAVA Bookstore online inventory system
 
-## How to set up the database schema and connection details
+Thank you for taking your time to review my assignment.
 
-This submission uses MySQL 8.1.0 for implementation, and tested on local MySQL server. To set up the database schema on local, you could run the following SQL code on TablePlus or MySQLWorkbench.
+## Step 1: Setup Instruction
+1. Access the Repository: Clone or download the repository containing the Spring Boot application for the online book inventory system.
+
+2. Install Dependencies: Make sure you have Java, Maven, and MySQL installed on your system.
+
+3. Database Configuration: Set up a MySQL database (8.1.0) and update the application's application.properties file with the appropriate database connection details.
+
+- To set up the database schema on local, you could run the following SQL code on TablePlus or MySQLWorkbench.
 
 ```
 CREATE DATABASE bookstore;
 USE bookstore;
 ```
 
-By default, local MySQL server endpoint is "localhost:3306". To change the database configuration such as url, username and password, you could edit the ./src/main/resources/application.properties accordingly.
+- By default, local MySQL server endpoint is "localhost:3306". To change the database configuration such as url, username and password, you could edit the ./src/main/resources/application.properties accordingly.
 ```
 spring.datasource.url=jdbc:mysql://${MYSQL_HOST:localhost}:3306/bookstore
 spring.datasource.username=root
 spring.datasource.password=password
 ```
 
-## How to run/test the function APIs
+## Step 2: Explore the function APIs
 It's recommended to use Postman to test the function APIs. You could import the collections to Postman to test the APIs. By default, the BookstoreApplication endpoint is "localhost:8080".
+
+The sample query for every function has been packed into bookstore.zip in the bookstore/ directory. You could import this collection into Postman to simplify the test.
+
+The following functions have been done and optimized to some degree.
+
+1. Add a book to the inventory.
+2. Remove a book from the inventory.
+3. Update the quantity in stock for a given book.
+4. Retrieve the quantity in stock for a given book.
+5. List all books in the inventory.
+6. Search and Filter Functionality
+7. Error Handling
+8. Performance Optimization
+   - Pagination of response for **list all books info** (/listAll) and **seach** (/search)  
+   - Cache for **get book quantity** and **update book quantity**
