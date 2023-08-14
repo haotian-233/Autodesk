@@ -12,8 +12,14 @@ import com.example.bookstore.Entity.Book;
 
 @Repository
 public interface BookInventory extends JpaRepository<Book, Long>{
-    @Query("SELECT b FROM Book b WHERE b.price >= :minPrice AND b.price <= :maxPrice")
-    List<Book> findBooksInPriceRange(Double minPrice, Double maxPrice);
-
     Page<Book> findAll(Pageable pageable);
+
+    @Query("SELECT b FROM Book b WHERE " +
+            "(:title IS NULL OR b.title LIKE %:title%) " +
+            "AND (:author IS NULL OR b.author LIKE %:author%) " +
+            "AND (:isbn IS NULL OR b.isbn = :isbn) " +
+            "AND (:minPrice IS NULL OR b.price >= :minPrice) " +
+            "AND (:maxPrice IS NULL OR b.price <= :maxPrice) " +
+            "AND (:available IS NULL OR b.quantity > 0)")
+    Page<Book> searchBooks(String title, String author, Long isbn, Double minPrice, Double maxPrice, Boolean available, Pageable pageable);
 }

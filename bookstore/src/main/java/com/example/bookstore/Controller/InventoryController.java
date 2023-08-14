@@ -7,6 +7,7 @@ import org.hibernate.type.descriptor.java.IntegerJavaType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -91,25 +92,29 @@ public class InventoryController {
 
     @GetMapping("/listAll")
     public ResponseEntity<List<Book>> listAllBooks(@RequestParam(defaultValue = "0") int page,
-                                   @RequestParam(defaultValue = "10") int size){
+                                                   @RequestParam(defaultValue = "10") int size){
         
         List<Book> bookpage = bookService.listAllBooks(page, size);
 
         return ResponseEntity.ok(bookpage);
     }
 
-    // @GetMapping("/search")
-    // public List<Book> searchBooks(@RequestParam(required = false) String title, @RequestParam(required = false) String author) {
-    //     // if (title != null && author != null) {
-    //     //     return bookRepository.findByTitleAndAuthor(title, author);
-    //     // } else if (title != null) {
-    //     //     return bookRepository.findByTitle(title);
-    //     // } else if (author != null) {
-    //     //     return bookRepository.findByAuthor(author);
-    //     // } else {
-    //     //     return bookRepository.findAll();
-    //     // }
-    // }
+    @GetMapping("/search")
+    public ResponseEntity<List<Book>> searchBooks(
+            @RequestParam(required = false) String title,
+            @RequestParam(required = false) String author,
+            @RequestParam(required = false) Long isbn,
+            @RequestParam(required = false) Double minPrice,
+            @RequestParam(required = false) Double maxPrice,
+            @RequestParam(required = false) Boolean available,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
+
+        List<Book> books = bookService.searchBooks(title, author, isbn, minPrice, maxPrice, available, page, size);
+        return ResponseEntity.ok(books);
+    }
+
+
 
 
 }
