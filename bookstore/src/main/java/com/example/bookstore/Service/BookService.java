@@ -15,16 +15,18 @@ public class BookService {
     private BookInventory bookInventory;
 
     public Book findBookByISBN(Long isbn){
-        // TODO: handle not found exception
         return bookInventory.findById(isbn).orElse(null);
-        // return bookInventory.getReferenceById(isbn);
     }
 
-    public Book addNewBook(Book book){
-        // TODO: need to check for duplicate key -> 400
-        // TODO: server error -> 500
-        // TODO: check & enforce ISBN format 13 digits
-        book.setQuantity(0); // only if its new book, not existing book
+    public Boolean doesBookExists(Long isbn){
+        return bookInventory.existsById(isbn);
+    }
+
+    public Boolean isValidISBN(Long isbn){
+        return (String.valueOf(isbn).length() == 13);
+    }
+
+    public Book addNewBook(Book book){        
         return bookInventory.saveAndFlush(book);
     }
 
@@ -32,18 +34,11 @@ public class BookService {
         bookInventory.deleteById(isbn);
     }
 
-    public Integer getBookQuantityById(Long isbn){
-        Book book = findBookByISBN(isbn);
-        return book.getQuantity();
-    }
-
     public void updateBookQuantityById(Long isbn, Integer newQuantity){
         Book book = findBookByISBN(isbn);
         book.setQuantity(newQuantity);
         bookInventory.saveAndFlush(book);
     }
-
-    // TODO: updateBook: update book info for existing isbn
 
     public List<Book> listAllBooks(){
         // TODO: IO intensive, to be optimized 
