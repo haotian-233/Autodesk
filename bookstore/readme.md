@@ -36,7 +36,15 @@ The following functions have been done and optimized to some degree.
 4. Retrieve the quantity in stock for a given book.
 5. List all books in the inventory.
 6. Search and Filter Functionality
-7. Error Handling
-8. Performance Optimization
+7. Authentication and authorisation
+   - implemented a simple token based authentication mechanism
+8. Error Handling
+9.  Performance Optimization
    - Pagination of response for **list all books info** (/listAll) and **seach** (/search)  
    - Cache for **get book quantity** and **update book quantity**
+
+## Step 3: Logic flow of the inventory system
+1. user need to first register a username and password
+2. user need to login the system with user username and password, the system will return a uuid token. User would need this token to perform add book, remove book, and update book quantity operations. Other functions does not require this token.
+3. For authorised functions (add book, remove book, and update book quantity), user need to pass the token via request parameters
+4. user logout the system. The system will remove the token from its memory.
