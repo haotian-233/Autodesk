@@ -15,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.bookstore.Entity.Book;
+import com.example.bookstore.Entity.User;
 import com.example.bookstore.Service.BookService;
+
+import io.micrometer.common.util.StringUtils;
 
 @RestController
 public class InventoryController {
@@ -24,7 +27,10 @@ public class InventoryController {
     private BookService bookService;
 
     @PostMapping("/addBook")
-    public ResponseEntity<?> addBook(@RequestBody Book book){
+    public ResponseEntity<?> addBook(@RequestBody Book book, @RequestParam String token){
+        if(!bookService.authenticateUserToken(token)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token! Operation not authorized. Please login first.");
+        }
         Long isbn = book.getIsbn();
         if(!bookService.isValidISBN(isbn)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested ISBN is not in correct format. It should be 13 digits long.");
@@ -38,11 +44,14 @@ public class InventoryController {
     }
 
     @PostMapping("/removeBook")
-    public ResponseEntity<String> removeBook(Long isbn){
+    public ResponseEntity<String> removeBook(@RequestParam Long isbn, @RequestParam String token){
+        if(!bookService.authenticateUserToken(token)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token! Operation not authorized. Please login first.");
+        }
         if(!bookService.isValidISBN(isbn)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested ISBN is not in correct format. It should be 13 digits long.");
         }
-        if(bookService.doesBookExists(isbn)){
+        if(!bookService.doesBookExists(isbn)){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("ISBN " + isbn + " is not found in our database!");
         }
         bookService.removeBook(isbn);
@@ -73,7 +82,10 @@ public class InventoryController {
 
     @PutMapping("/updateQuantity")
     @CacheEvict(value = "bookQuantities", key = "#isbn")
-    public ResponseEntity<String> updateBookQuantityById(@RequestParam Long isbn, @RequestParam Integer quantity){
+    public ResponseEntity<String> updateBookQuantityById(@RequestParam Long isbn, @RequestParam Integer quantity, @RequestParam String token){
+        if(!bookService.authenticateUserToken(token)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid token! Operation not authorized. Please login first.");
+        }
         if(!bookService.isValidISBN(isbn)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested ISBN is not in correct format. It should be 13 digits long.");
         }
@@ -108,7 +120,40 @@ public class InventoryController {
         return ResponseEntity.ok(books);
     }
 
+    @PostMapping("/register")
+    public ResponseEntity<String> registerUser(@RequestBody User newUser) {
+        if (StringUtils.isEmpty(newUser.getUsername()) || StringUtils.isEmpty(newUser.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password cannot be empty");
+        }
+        bookService.registerUser(newUser);
+        return ResponseEntity.ok().body("registered.");
+    }
+    
+    @GetMapping("/login")
+    public ResponseEntity<String> loginUser(@RequestBody User user) {
+        if (StringUtils.isEmpty(user.getUsername()) || StringUtils.isEmpty(user.getPassword())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Username and password cannot be empty");
+        }
+        Boolean valid = bookService.authenticateUserPassword(user);
+        if (valid){
+            String token = bookService.generateAndStoreUUIDv4Token(user.getUsername());
+            return ResponseEntity.ok(token);
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("username does not exist or password does not match. Please register first if you didn't.");
+        }
+    }
 
-
+    @GetMapping("/logout")
+    public ResponseEntity<String> loginOutUser(@RequestParam String token) {
+        if (StringUtils.isEmpty(token)) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Token cannot be empty");
+        }
+        Boolean isSuccess = bookService.logoutUser(token);
+        if(isSuccess){
+            return ResponseEntity.ok().body("logout successfully");
+        }else{
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalide token.");
+        }        
+    }
 
 }
