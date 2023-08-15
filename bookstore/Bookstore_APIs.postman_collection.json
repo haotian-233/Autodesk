@@ -1,0 +1,240 @@
+{
+	"info": {
+		"_postman_id": "377bc2c3-59e9-4c49-9f4c-8635b15670b1",
+		"name": "Bookstore_APIs",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "28509014"
+	},
+	"item": [
+		{
+			"name": "addBook",
+			"request": {
+				"auth": {
+					"type": "noauth"
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"isbn\": 1234567890124,\n    \"title\": \"Chinese\",\n    \"author\": \"master\",\n    \"price\": 15\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/addBook",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"addBook"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/listAll",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/listAll",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"listAll"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/getQuantity?isbn=222",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/getQuantity?isbn=222",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"getQuantity"
+					],
+					"query": [
+						{
+							"key": "isbn",
+							"value": "222"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/222/updateQuantity?quantity=5",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/222/updateQuantity?quantity=5",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"222",
+						"updateQuantity"
+					],
+					"query": [
+						{
+							"key": "quantity",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "search?id=1234567890125",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/search?maxPrice=20&minPrice=10",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"search"
+					],
+					"query": [
+						{
+							"key": "isbn",
+							"value": "1234567890125",
+							"disabled": true
+						},
+						{
+							"key": "maxPrice",
+							"value": "20"
+						},
+						{
+							"key": "minPrice",
+							"value": "10"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "register",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\": \"haotian\",\n    \"password\": \"123\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "register",
+					"host": [
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/login",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "localhost:8080/login",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/logout?token=694410e1-7571-4c72-bb5e-0aa484deb89d",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/logout?token=23fb888f-677e-4d3c-a5d6-7f06f7f271d5",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"logout"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "23fb888f-677e-4d3c-a5d6-7f06f7f271d5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "localhost:8080/removeBook?token=bceab75f-a0e6-4dd1-a28a-056b3dd67af3&isbn",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/removeBook?token=bceab75f-a0e6-4dd1-a28a-056b3dd67af3&isbn",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"removeBook"
+					],
+					"query": [
+						{
+							"key": "token",
+							"value": "bceab75f-a0e6-4dd1-a28a-056b3dd67af3"
+						},
+						{
+							"key": "isbn",
+							"value": null
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
